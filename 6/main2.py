@@ -15,21 +15,21 @@ with open("6/input.txt") as file:
     values = file.read().splitlines()
 
 # fish = [int(day) for day in values[0].split(",")]
-fish = [1]
+fish = [5]
 
-# 7 - 256
-# 6 - 257
-# 5 - 258
-# 4 - 259
-# 3 - 260
-# 2 - 261
-# 1 - 262
+# 5 - 256
+# 4 - 257
+# 3 - 258
+# 2 - 259
+# 1 - 260
+result = []
 
 
-for i in range(262):
+for i in range(260):
     fish = list(map(update_fish, fish))
     fish += [8] * GLOBAL_ADD_FISH
-    print(GLOBAL_ADD_FISH)
+    if i >= 255:
+        result.append(len(fish))
     GLOBAL_ADD_FISH = 0
 
-print(len(fish))
+print(result)
