@@ -1,4 +1,5 @@
-from typing import List, Set
+from typing import List
+import itertools
 from dataclasses import dataclass
 
 
@@ -9,16 +10,11 @@ class DumboOctupus:
     energy: int
     flashed_this_turn: bool
 
-    # def __hash__(self):
-    #     return hash((self.x, self.y, self.energy))
-
 
 class OctopusField:
     octopuses: List[DumboOctupus]
-    total_flashes: int
 
     def __init__(self, string_octopuses: List[str]):
-        self.total_flashes = 0
         self.octopuses = []
         for y, line in enumerate(string_octopuses):
             for x, energy_level in enumerate(line):
@@ -31,22 +27,20 @@ class OctopusField:
                 self.__flash(octopus)
 
         flashed_octopuses = [octo for octo in self.octopuses if octo.flashed_this_turn is True]
-        self.total_flashes += len(flashed_octopuses)
         for octo in flashed_octopuses:
             octo.energy = 0
             octo.flashed_this_turn = False
 
+        if len(flashed_octopuses) == 100:
+            return True
+        else:
+            return False
 
     def __flash(self, octopus: DumboOctupus):
         octopus.flashed_this_turn = True
-        # adjacent_octopuses = [
-        #     octo for octo in self.octopuses
-        #     if (octopus.x - 1 <= octo.x <= octopus.x+1 and octopus.y - 1 <= octo.y <= octopus.y+1)
-        #     and (octo is not octopus)
-        #     and octo.flashed_this_turn is False
-        # ]
         for octo in self.octopuses:
-            if (octopus.x - 1 <= octo.x <= octopus.x+1 and octopus.y - 1 <= octo.y <= octopus.y+1) and (octo is not octopus) and octo.flashed_this_turn is False:
+            if (octopus.x - 1 <= octo.x <= octopus.x + 1 and octopus.y - 1 <= octo.y <= octopus.y + 1) and (
+                    octo is not octopus) and octo.flashed_this_turn is False:
                 self.__catch_a_flash(octo)
 
     def __catch_a_flash(self, octopus: DumboOctupus):
@@ -64,9 +58,11 @@ with open("11/input.txt") as file:
 
 field = OctopusField(data)
 
-for i in range(100):
-    field.tick()
+for i in itertools.count():
+    print(i)
+    are_we_there_yet = field.tick()
+    if are_we_there_yet:
+        print(i)
+        break
 
-print(field.total_flashes)
-print([x.energy for x in field.octopuses])
 
